@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Figma MCP Access — Test Client</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      line-height: 1.6;
+      padding: 24px;
+    }
+    h1 {
+      color: #f0f6fc;
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+    .subtitle {
+      color: #8b949e;
+      font-size: 0.85rem;
+      margin-bottom: 24px;
+    }
+    .config-section {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .config-section label {
+      display: block;
+      color: #8b949e;
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .config-section input {
+      width: 100%;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      color: #c9d1d9;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      font-family: "SF Mono", "Fira Code", monospace;
+      margin-bottom: 12px;
+    }
+    .config-section input:focus {
+      outline: none;
+      border-color: #58a6ff;
+    }
+    .config-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    button {
+      background: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      color: #c9d1d9;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    button:hover {
+      background: #30363d;
+      border-color: #8b949e;
+    }
+    button.primary {
+      background: #238636;
+      border-color: #238636;
+      color: #fff;
+    }
+    button.primary:hover {
+      background: #2ea043;
+    }
+    button.tool-btn {
+      background: #1a1e24;
+      border-color: #1f6feb33;
+      color: #58a6ff;
+    }
+    button.tool-btn:hover {
+      background: #1f6feb22;
+      border-color: #1f6feb;
+    }
+    .tool-params {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .tool-params h3 {
+      color: #f0f6fc;
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+    }
+    .param-group {
+      margin-bottom: 10px;
+    }
+    .param-group label {
+      display: block;
+      color: #8b949e;
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+    }
+    .param-group input {
+      width: 100%;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      color: #c9d1d9;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      font-family: "SF Mono", "Fira Code", monospace;
+    }
+    .param-group input:focus {
+      outline: none;
+      border-color: #58a6ff;
+    }
+    .param-group .hint {
+      color: #484f58;
+      font-size: 0.75rem;
+      margin-top: 2px;
+    }
+    .response-section {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .response-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .response-header h3 {
+      color: #f0f6fc;
+      font-size: 0.95rem;
+    }
+    .status-badge {
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .status-badge.success { background: #23863633; color: #3fb950; }
+    .status-badge.error { background: #da363433; color: #f85149; }
+    .status-badge.pending { background: #9e6a0333; color: #d29922; }
+    .status-badge.idle { background: #30363d; color: #8b949e; }
+    .response-body {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 12px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      max-height: 600px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #8b949e;
+    }
+    .response-body .key { color: #79c0ff; }
+    .response-body .string { color: #a5d6ff; }
+    .response-body .number { color: #79c0ff; }
+    .response-body .boolean { color: #ff7b72; }
+    .response-body .null { color: #8b949e; }
+    .divider {
+      border: none;
+      border-top: 1px solid #21262d;
+      margin: 16px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Figma MCP Access — Test Client</h1>
+  <p class="subtitle">Browser-based test client for the Figma MCP Access server</p>
+
+  <!-- Configuration -->
+  <div class="config-section">
+    <div class="config-row">
+      <div>
+        <label for="serverUrl">Server URL</label>
+        <input type="text" id="serverUrl" value="http://localhost:8788" placeholder="http://localhost:8788">
+      </div>
+      <div>
+        <label for="bearerToken">Bearer Token</label>
+        <input type="password" id="bearerToken" placeholder="Your SERVICE_BEARER_TOKEN">
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="actions">
+    <button class="primary" onclick="sendRequest('initialize')">Initialize</button>
+    <button class="primary" onclick="sendRequest('tools/list')">List Tools</button>
+    <button onclick="sendRequest('ping')">Ping</button>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Tool Actions -->
+  <div class="actions">
+    <button class="tool-btn" onclick="showToolParams('get_figma_file')">get_figma_file</button>
+    <button class="tool-btn" onclick="showToolParams('get_figma_node')">get_figma_node</button>
+    <button class="tool-btn" onclick="showToolParams('get_figma_components')">get_figma_components</button>
+    <button class="tool-btn" onclick="showToolParams('get_figma_variables')">get_figma_variables</button>
+    <button class="tool-btn" onclick="showToolParams('get_figma_comments')">get_figma_comments</button>
+    <button class="tool-btn" onclick="showToolParams('get_team_components')">get_team_components</button>
+    <button class="tool-btn" onclick="showToolParams('get_figma_styles')">get_figma_styles</button>
+  </div>
+
+  <!-- Tool Parameters -->
+  <div class="tool-params" id="toolParams" style="display:none;">
+    <h3 id="toolParamsTitle">Tool Parameters</h3>
+    <div id="toolParamsFields"></div>
+    <div style="margin-top:12px;">
+      <button class="primary" onclick="callTool()">Call Tool</button>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Response -->
+  <div class="response-section">
+    <div class="response-header">
+      <h3>Response</h3>
+      <span class="status-badge idle" id="statusBadge">Idle</span>
+    </div>
+    <div class="response-body" id="responseBody">No requests sent yet.</div>
+  </div>
+
+  <script>
+    let currentTool = null;
+    let requestCounter = 1;
+
+    const toolSchemas = {
+      get_figma_file: {
+        description: "Retrieve the document tree of a Figma file",
+        params: [
+          { name: "file_key", type: "text", required: true, placeholder: "e.g., ABC123def456", hint: "From figma.com/design/FILE_KEY/..." },
+          { name: "depth", type: "number", required: false, placeholder: "2", hint: "How deep to traverse (default: 2)" }
+        ]
+      },
+      get_figma_node: {
+        description: "Retrieve a specific node from a Figma file",
+        params: [
+          { name: "file_key", type: "text", required: true, placeholder: "e.g., ABC123def456" },
+          { name: "node_id", type: "text", required: true, placeholder: "e.g., 1:2 or 123-456", hint: "From URL ?node-id=... or get_figma_file output" }
+        ]
+      },
+      get_figma_components: {
+        description: "List all published components in a Figma file",
+        params: [
+          { name: "file_key", type: "text", required: true, placeholder: "e.g., ABC123def456" }
+        ]
+      },
+      get_figma_variables: {
+        description: "Retrieve all local variables (design tokens) from a Figma file",
+        params: [
+          { name: "file_key", type: "text", required: true, placeholder: "e.g., ABC123def456" }
+        ]
+      },
+      get_figma_comments: {
+        description: "Retrieve all comments on a Figma file",
+        params: [
+          { name: "file_key", type: "text", required: true, placeholder: "e.g., ABC123def456" }
+        ]
+      },
+      get_team_components: {
+        description: "List all published components across a Figma team",
+        params: [
+          { name: "team_id", type: "text", required: true, placeholder: "e.g., 123456", hint: "From figma.com/files/team/TEAM_ID/..." },
+          { name: "page", type: "number", required: false, placeholder: "1", hint: "Page number (default: 1)" }
+        ]
+      },
+      get_figma_styles: {
+        description: "Retrieve all shared styles from a Figma file",
+        params: [
+          { name: "file_key", type: "text", required: true, placeholder: "e.g., ABC123def456" }
+        ]
+      }
+    };
+
+    function getServerUrl() {
+      return document.getElementById("serverUrl").value.replace(/\/+$/, "");
+    }
+
+    function getBearerToken() {
+      return document.getElementById("bearerToken").value;
+    }
+
+    function setStatus(type, text) {
+      const badge = document.getElementById("statusBadge");
+      badge.className = "status-badge " + type;
+      badge.textContent = text;
+    }
+
+    function syntaxHighlight(json) {
+      if (typeof json !== "string") {
+        json = JSON.stringify(json, null, 2);
+      }
+      json = json.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      return json.replace(
+        /("(\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+        function(match) {
+          let cls = "number";
+          if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+              cls = "key";
+            } else {
+              cls = "string";
+            }
+          } else if (/true|false/.test(match)) {
+            cls = "boolean";
+          } else if (/null/.test(match)) {
+            cls = "null";
+          }
+          return '<span class="' + cls + '">' + match + "</span>";
+        }
+      );
+    }
+
+    function showResponse(data) {
+      const el = document.getElementById("responseBody");
+      el.innerHTML = syntaxHighlight(data);
+    }
+
+    function showToolParams(toolName) {
+      currentTool = toolName;
+      const schema = toolSchemas[toolName];
+      const container = document.getElementById("toolParams");
+      const title = document.getElementById("toolParamsTitle");
+      const fields = document.getElementById("toolParamsFields");
+
+      title.textContent = toolName + " — " + schema.description;
+      fields.innerHTML = "";
+
+      schema.params.forEach(function(p) {
+        const div = document.createElement("div");
+        div.className = "param-group";
+        const req = p.required ? " (required)" : " (optional)";
+        div.innerHTML =
+          '<label>' + p.name + req + '</label>' +
+          '<input type="' + p.type + '" id="param_' + p.name + '" placeholder="' + (p.placeholder || "") + '">' +
+          (p.hint ? '<div class="hint">' + p.hint + '</div>' : '');
+        fields.appendChild(div);
+      });
+
+      container.style.display = "block";
+    }
+
+    function callTool() {
+      if (!currentTool) return;
+      const schema = toolSchemas[currentTool];
+      const args = {};
+
+      schema.params.forEach(function(p) {
+        const input = document.getElementById("param_" + p.name);
+        if (input && input.value.trim() !== "") {
+          if (p.type === "number") {
+            args[p.name] = parseInt(input.value, 10);
+          } else {
+            args[p.name] = input.value.trim();
+          }
+        }
+      });
+
+      // Validate required params
+      for (var i = 0; i < schema.params.length; i++) {
+        var p = schema.params[i];
+        if (p.required && !args[p.name]) {
+          setStatus("error", "Missing: " + p.name);
+          return;
+        }
+      }
+
+      sendRequest("tools/call", { name: currentTool, arguments: args });
+    }
+
+    async function sendRequest(method, params) {
+      const url = getServerUrl() + "/mcp";
+      const token = getBearerToken();
+
+      if (!token) {
+        setStatus("error", "Missing Bearer Token");
+        showResponse({ error: "Please enter a Bearer Token in the configuration above" });
+        return;
+      }
+
+      const requestId = requestCounter++;
+      const body = {
+        jsonrpc: "2.0",
+        id: requestId,
+        method: method,
+      };
+
+      if (params !== undefined) {
+        body.params = params;
+      }
+
+      setStatus("pending", "Sending...");
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+          },
+          body: JSON.stringify(body),
+        });
+
+        const data = await response.json();
+
+        if (response.ok && !data.error) {
+          setStatus("success", response.status + " OK");
+        } else if (data.error) {
+          setStatus("error", "Error " + (data.error.code || ""));
+        } else {
+          setStatus("error", response.status + " " + response.statusText);
+        }
+
+        showResponse(data);
+      } catch (err) {
+        setStatus("error", "Network Error");
+        showResponse({
+          error: "Failed to connect to server",
+          message: err.message,
+          hint: "Make sure the server is running at " + url,
+        });
+      }
+    }
+
+    // Auto-focus bearer token on load
+    window.addEventListener("load", function() {
+      document.getElementById("bearerToken").focus();
+    });
+  </script>
+</body>
+</html>

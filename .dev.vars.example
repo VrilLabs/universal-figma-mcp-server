@@ -1,0 +1,8 @@
+# Figma Personal Access Token (required)
+# Generate at: https://www.figma.com/settings → Security → Personal access tokens
+# Scopes needed: File content (Read only), Variables (Read only), Comments (Read only)
+FIGMA_PAT=figd_your_figma_personal_access_token_here
+
+# Service Bearer Token for authenticating MCP clients (required)
+# Generate with: openssl rand -hex 32
+SERVICE_BEARER_TOKEN=your_generated_bearer_token_here

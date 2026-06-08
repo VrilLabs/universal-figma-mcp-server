@@ -1,0 +1,22 @@
+{
+  "name": "figma-mcp-access",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker MCP server wrapping the Figma REST API for GitHub Copilot Cloud Agent",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "start": "bun run src/server.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250109.0",
+    "@types/bun": "^1.1.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0",
+    "wrangler": "^3.101.0"
+  }
+}
