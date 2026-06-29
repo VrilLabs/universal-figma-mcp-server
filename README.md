@@ -1,6 +1,6 @@
 # Figma MCP Access
 
-Pipe Figma MCP through Cloudflare so it's available everywhere and to any agent (local or cloud-based). A Cloudflare Worker-based MCP (Model Context Protocol) server that wraps the Figma REST API, enabling GitHub Copilot Cloud Agent and other MCP clients to access Figma design data.
+Pipe Figma MCP through Cloudflare so it's available everywhere and to any agent (local or cloud-based). A Cloudflare Worker-based MCP (Model Context Protocol) server that wraps the Figma REST API, enabling **GitHub Copilot Cloud Agent** and other MCP clients to access Figma design data.
 
 Save precious development time instead of authenticating to Figma's MCP over-and-over.
 
